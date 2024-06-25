@@ -1,0 +1,111 @@
+.todo {
+	&__input {
+		text-align: center;
+
+		input {
+			width: 35vw;
+		}
+	}
+
+	&__items {
+		margin-top: 2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	&__item {
+		position: relative;
+
+		width: 35vw;
+		padding: 1.25rem;
+
+		font-size: 1.25rem;
+		line-height: 1.42;
+		font-family: inherit;
+
+		color: $color-black;
+		background-color: $color-white;
+		border: 1px solid $color-beige-200;
+		border-radius: 10px;
+
+		transition: $main-transition;
+
+		cursor: pointer;
+
+		&:hover {
+			background-color: $color-beige-100;
+		}
+
+		&:active {
+			border: 1px solid $color-gray-300;
+		}
+
+		&::before {
+			content: '';
+
+			position: absolute;
+			top: 20px;
+			left: 20px;
+
+			width: 28px;
+			height: 28px;
+
+			background-color: transparent;
+			border: 1px solid $color-black;
+			border-radius: 5px;
+		}
+
+		&::after {
+			content: '';
+
+			position: absolute;
+			top: 25px;
+			left: 25px;
+
+			width: 20px;
+			height: 20px;
+
+			background-image: url('../assets/icons/completed.svg');
+			background-size: contain;
+			background-repeat: no-repeat;
+			opacity: 0;
+		}
+
+		&.completed::after {
+			opacity: 1;
+		}
+
+		&.completed .todo__text {
+			color: $color-gray-300;
+			text-decoration: line-through;
+		}
+	}
+
+	&__text {
+		position: relative;
+
+		padding: 0 2.5rem;
+	}
+
+	&__delete {
+		&::before {
+			content: '';
+
+			position: absolute;
+			top: 50%;
+			right: 10px;
+
+			width: 30px;
+			height: 30px;
+
+			background-image: url('../assets/icons/delete.svg');
+			background-size: contain;
+			background-repeat: no-repeat;
+
+			transform: translateY(-50%);
+		}
+	}
+}
