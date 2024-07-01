@@ -2,6 +2,7 @@ import './styles/main.scss'
 
 const todoItems = document.querySelector('.todo__items')
 const todoInput = document.querySelector('.todo__input input')
+const filterButtons = document.querySelector('.todo__filter')
 
 const todos = window.localStorage.getItem('todos')
 	? JSON.parse(window.localStorage.getItem('todos'))
@@ -14,7 +15,9 @@ const renderTodo = todo => {
 		todo.id
 	}">
 				<p class="todo__text">${todo.text}</p>
-				<span class="todo__delete"></span>
+				<input class="todo__change hidden" type="text" value="${todo.text}"/>
+				<button class="todo__delete">
+				</button>
 			</div>
 		`
 	todoItems.insertAdjacentHTML('afterbegin', todoItem)
@@ -51,10 +54,12 @@ todoInput.addEventListener('keypress', e => {
 todoItems.addEventListener('click', e => {
 	const target = e.target.closest('.todo__item')
 
+	if (!target) return
+
 	// При клике на кнопку "удалить задачу"
 	if (e.target.classList.contains('todo__delete')) {
 		const id = target.dataset.id
-		
+
 		todos.splice(
 			todos.findIndex(t => t.id == id),
 			1
@@ -76,4 +81,46 @@ todoItems.addEventListener('click', e => {
 	todoEl.classList.toggle('completed')
 
 	window.localStorage.setItem('todos', JSON.stringify(todos))
+})
+
+// Изменение текста задачи
+const changeInput = (target, todoItem) => {
+	const newValue = target.value.trim()
+	const id = todoItem.dataset.id
+
+	if (!newValue) return
+
+	target.classList.remove('visible')
+
+	todos.find(t => t.id == id).text = newValue
+
+	window.localStorage.setItem('todos', JSON.stringify(todos))
+
+	renderTodos(todos)
+}
+
+todoItems.addEventListener('dblclick', e => {
+	const changeInputEl = e.target.nextElementSibling
+	const todoItem = e.target.closest('.todo__item')
+
+	if (!changeInputEl) return
+
+	changeInputEl.classList.add('visible')
+
+	changeInputEl.addEventListener('blur', () => {
+		changeInput(changeInputEl, todoItem)
+	})
+
+	changeInputEl.addEventListener('keypress', e => {
+		if (e.key === 'Enter') {
+			changeInput(changeInputEl, todoItem)
+		}
+	})
+})
+
+// Фильтрация задач
+filterButtons.addEventListener('click', e => {
+	const target = e.target.closest('.todo__filter-item')
+
+	if (!target) return
 })
