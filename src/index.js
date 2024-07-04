@@ -11,13 +11,10 @@ const todos = window.localStorage.getItem('todos')
 // Рендер отдельной задачи
 const renderTodo = todo => {
 	const todoItem = `
-			<div class="todo__item ${todo.completed ? 'completed' : ''}" data-id="${
-		todo.id
-	}">
+			<div class="todo__item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
 				<p class="todo__text">${todo.text}</p>
 				<input class="todo__change hidden" type="text" value="${todo.text}"/>
-				<button class="todo__delete">
-				</button>
+				<button class="todo__delete"></button>
 			</div>
 		`
 	todoItems.insertAdjacentHTML('afterbegin', todoItem)
@@ -56,7 +53,7 @@ todoItems.addEventListener('click', e => {
 
 	if (!target) return
 
-	// При клике на кнопку "удалить задачу"
+	// При клике на кнопку "крестик" удаляем задачу
 	if (e.target.classList.contains('todo__delete')) {
 		const id = target.dataset.id
 
@@ -67,7 +64,8 @@ todoItems.addEventListener('click', e => {
 		target.removeChild(e.target)
 		window.localStorage.setItem('todos', JSON.stringify(todos))
 
-		renderTodos(todos)
+		const filterBtnActive = filterButtons.querySelector('.active')
+		filterTodos(filterBtnActive)
 
 		return
 	}
@@ -76,9 +74,12 @@ todoItems.addEventListener('click', e => {
 	const id = target.dataset.id
 	const todo = todos.find(t => t.id == id)
 	const todoEl = todoItems.querySelector(`.todo__item[data-id="${id}"]`)
+	const filterBtnActive = filterButtons.querySelector('.active')
 
 	todos.filter(t => t.id == id)[0].completed = !todo.completed
 	todoEl.classList.toggle('completed')
+
+	filterTodos(filterBtnActive)
 
 	window.localStorage.setItem('todos', JSON.stringify(todos))
 })
@@ -118,9 +119,28 @@ todoItems.addEventListener('dblclick', e => {
 	})
 })
 
-// Фильтрация задач
+const filterTodos = target => {
+	switch (target.dataset.filter) {
+		case 'all':
+			renderTodos(todos)
+			break
+		case 'active':
+			renderTodos(todos.filter(t => !t.completed))
+			break
+		case 'completed':
+			renderTodos(todos.filter(t => t.completed))
+			break
+	}
+}
+
 filterButtons.addEventListener('click', e => {
+	const filterBtnActive = filterButtons.querySelector('.active')
 	const target = e.target.closest('.todo__filter-item')
 
 	if (!target) return
+
+	filterBtnActive.classList.remove('active')
+	target.classList.add('active')
+
+	filterTodos(target)
 })
