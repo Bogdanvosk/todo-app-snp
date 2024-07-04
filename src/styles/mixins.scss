@@ -1,43 +1,7 @@
-@mixin p-mobile {
-	@media (max-width: $sm) {
-		font-size: 1rem;
-		line-height: 1.42;
-	}
-}
-
 @mixin reset {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-}
-
-@mixin list-reset {
-	margin: 0;
-	padding: 0;
-
-	list-style: none;
-}
-
-@mixin link-reset {
-	color: inherit;
-
-	text-decoration: none;
-}
-
-@mixin hidden {
-	position: absolute;
-
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	padding: 0;
-
-	border: 0;
-
-	white-space: nowrap;
-	clip-path: inset(100%);
-	clip: rect(0 0 0 0);
-	overflow: hidden;
 }
 
 @mixin container($width, $padding) {
@@ -51,41 +15,8 @@
 	text-align: center;
 }
 
-@mixin subtitle {
-	max-width: 450px;
-	margin: 1.88rem auto 0;
-
-	text-align: center;
-
-	color: $color-gray-300;
-
-	@media (max-width: $sm) {
-		margin-top: 1.25rem;
-	}
-}
-
-@mixin extra-button {
-	padding: 7px 60px 7px 20px;
-
-	font-weight: 700;
-	font-size: 23px;
-	line-height: 28px;
-
-	color: $color-white;
-	background-color: transparent;
-	border: none;
-	border-radius: 50px;
-
-	transition: $main-transition;
-
-	@media (max-width: $sm) {
-		font-size: 1rem;
-		line-height: 1.42;
-	}
-}
-
 @mixin input {
-	width: 28vw;
+	width: 75%;
 	padding: 1.25rem;
 
 	font-size: 1.25rem;

@@ -24,82 +24,21 @@ h1 {
 	letter-spacing: 0.02em;
 
 	@media (max-width: $sm) {
-		font-size: 2.13rem;
+		font-size: 4rem;
 		line-height: 1.12;
 	}
-}
-
-h2 {
-	font-size: 3.69rem;
-	line-height: 1.24;
-
-	@media (max-width: $sm) {
-		font-size: 2.13rem;
-		line-height: 1.12;
-	}
-}
-
-h3 {
-	font-weight: 500;
-	font-size: 2.19rem;
-	line-height: 1.22;
-
-	@media (max-width: $sm) {
-		font-size: 1.44rem;
-		line-height: 1.2;
-		letter-spacing: 0.04em;
-	}
-}
-
-textarea {
-	font-family: inherit;
 }
 
 section {
 	margin-top: 5rem;
 
 	@media (max-width: $sm) {
-		margin-top: 4.69rem;
+		margin-top: 3rem;
 	}
-}
-
-li {
-	@include list-reset;
-}
-
-a {
-	@include link-reset;
 }
 
 input {
 	@include input;
-}
-
-.normal,
-.small {
-	font-weight: 400;
-	line-height: 1.42;
-}
-
-.big {
-	font-weight: 700;
-	font-size: 1.44rem;
-	line-height: 1.22;
-
-	@include p-mobile;
-}
-
-.normal {
-	font-size: 20px;
-
-	@include p-mobile;
-}
-
-.small {
-	font-size: 1.06rem;
-	letter-spacing: -0.01em;
-
-	@include p-mobile;
 }
 
 .container {
@@ -116,19 +55,6 @@ input {
 
 .title {
 	@include title;
-}
-
-.subtitle {
-	@include subtitle;
-}
-
-.button {
-	@include extra-button;
-}
-
-.main {
-	position:static;
-	z-index: 5;
 }
 
 @import 'todo';

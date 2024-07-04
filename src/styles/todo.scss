@@ -3,7 +3,13 @@
 		text-align: center;
 
 		input {
-			width: 35vw;
+			@media (max-width: $sm) {
+				width: 90%;
+			}
+
+			@media (max-width: $xs) {
+				width: 100%;
+			}
 		}
 	}
 
@@ -19,7 +25,7 @@
 	&__item {
 		position: relative;
 
-		width: 35vw;
+		width: 75%;
 		padding: 1.25rem;
 
 		font-size: 1.25rem;
@@ -34,6 +40,14 @@
 		transition: $main-transition;
 
 		cursor: pointer;
+
+		@media (max-width: $sm) {
+			width: 90%;
+		}
+
+		@media (max-width: $xs) {
+			width: 100%;
+		}
 
 		&:active {
 			border: 1px solid $color-gray-300;
@@ -85,7 +99,12 @@
 	&__text {
 		position: relative;
 
+		overflow: hidden;
+		
 		padding: 0 2.5rem;
+		
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	&__delete {
