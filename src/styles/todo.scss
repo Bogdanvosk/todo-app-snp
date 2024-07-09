@@ -54,13 +54,10 @@
 			background-color: $color-beige-100;
 		}
 
-		&::before {
-			content: '';
+		span {
+			position: relative;
 
-			position: absolute;
-			top: 20px;
-			left: 20px;
-
+			display: block;
 			width: 28px;
 			height: 28px;
 
@@ -69,12 +66,12 @@
 			border-radius: 5px;
 		}
 
-		&::after {
+		span::after {
 			content: '';
 
 			position: absolute;
-			top: 25px;
-			left: 25px;
+			top: 3px;
+			left: 3px;
 			z-index: 0;
 
 			width: 20px;
@@ -86,7 +83,7 @@
 			opacity: 0;
 		}
 
-		&.completed::after {
+		&.completed span::after {
 			opacity: 1;
 		}
 
@@ -96,13 +93,17 @@
 		}
 	}
 
+	&__content {
+		display: flex;
+		gap: 1rem;
+	}
+
 	&__text {
 		position: relative;
 
+		padding-right: 2rem;
 		overflow: hidden;
-		
-		padding: 0 2.5rem;
-		
+
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
@@ -167,36 +168,32 @@
 		width: 100%;
 	}
 
+	&__nav {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 3rem;
+
+		margin-bottom: 2rem;
+	}
+
 	&__filter {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
 
-		margin-bottom: 2rem;
-
-		&-item {
-			padding: 0.5rem 1rem;
-
-			font-size: 20px;
-
-			color: $color-black;
-			background-color: transparent;
-			border: 1px solid transparent;
-			border-radius: 6px;
-
-			transition: $main-transition;
-
-			cursor: pointer;
-
-			&:hover {
-				background-color: $color-beige-200;
-			}
-		}
-
 		&-item.active {
 			background-color: $color-beige-200;
 		}
+	}
+
+	&__count {
+		font-size: 20px;
+	}
+
+	&__clear:active {
+		background-color: darken($color-beige-200, 10%);
 	}
 }
 

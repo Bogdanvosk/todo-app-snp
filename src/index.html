@@ -20,10 +20,14 @@
 	<main>
 		<section class="todo">
 			<div class="container">
-				<div class="todo__filter">
-					<button data-filter="all" class="todo__filter-item active">All</button>
-					<button data-filter="active" class="todo__filter-item">Active</button>
-					<button data-filter="completed" class="todo__filter-item">Completed</button>
+				<div class="todo__nav">
+					<div class="todo__filter">
+						<button data-filter="all" class="button todo__filter-item active">All</button>
+						<button data-filter="active" class="button todo__filter-item">Active</button>
+						<button data-filter="completed" class="button todo__filter-item">Completed</button>
+					</div>
+					<button class="button todo__clear">Clear completed</button>
+					<span class="todo__count"></span>
 				</div>
 				<div class="todo__input">
 					<input type="text" placeholder="What needs to be done?">

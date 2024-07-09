@@ -41,3 +41,22 @@
 		border: 1px solid $color-gray-300;
 	}
 }
+
+@mixin button {
+	padding: 0.5rem 1rem;
+
+	font-size: 20px;
+
+	color: $color-black;
+	background-color: transparent;
+	border: 1px solid transparent;
+	border-radius: 6px;
+
+	transition: $main-transition;
+
+	cursor: pointer;
+
+	&:hover {
+		background-color: $color-beige-200;
+	}
+}
