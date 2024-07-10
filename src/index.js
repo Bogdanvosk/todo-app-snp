@@ -27,7 +27,7 @@ const renderTodo = todo => {
 }
 
 const updateTodoCounter = () => {
-	const completedTodosLength = todos.filter(t => t.completed).length
+	const completedTodosLength = todos.filter(t => !t.completed).length
 
 	todoCounter.textContent = completedTodosLength + ' items left'
 }
