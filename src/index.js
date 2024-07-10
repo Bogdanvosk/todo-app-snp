@@ -5,6 +5,7 @@ const todoInput = document.querySelector('.todo__input input')
 const filterButtons = document.querySelector('.todo__filter')
 const todoCounter = document.querySelector('.todo__count')
 const clearTodosButton = document.querySelector('.todo__clear')
+const completeAllButton = document.querySelector('.todo__complete-all')
 
 let todos = window.localStorage.getItem('todos')
 	? JSON.parse(window.localStorage.getItem('todos'))
@@ -16,10 +17,8 @@ const renderTodo = todo => {
 			<div class="todo__item ${todo.completed ? 'completed' : ''}" data-id="${
 		todo.id
 	}">
-				<div class="todo__content">
-					<span class="todo__check"></span>
-					<p class="todo__text">${todo.text}</p>
-				</div>
+				<span class="todo__check"></span>
+				<p class="todo__text">${todo.text}</p>
 				<input class="todo__change hidden" type="text" value="${todo.text}"/>
 				<button class="todo__delete"></button>
 			</div>
@@ -28,8 +27,9 @@ const renderTodo = todo => {
 }
 
 const updateTodoCounter = () => {
-	todoCounter.textContent =
-		todos.filter(t => !t.completed).length + ' items left'
+	const completedTodosLength = todos.filter(t => t.completed).length
+
+	todoCounter.textContent = completedTodosLength + ' items left'
 }
 
 // Рендер всех задач
@@ -174,8 +174,17 @@ const onClearTodosClick = () => {
 
 	todos = todos.filter(t => !t.completed)
 	renderFilteredTodos(filterBtnActive)
-	
+
 	window.localStorage.setItem('todos', JSON.stringify(todos))
 }
 
 clearTodosButton.addEventListener('click', onClearTodosClick)
+
+const onCompleteAllClick = () => {
+	const filterBtnActive = filterButtons.querySelector('.active')
+	todos.map(t => (t.completed = true))
+
+	renderFilteredTodos(filterBtnActive)
+}
+
+completeAllButton.addEventListener('click', onCompleteAllClick)

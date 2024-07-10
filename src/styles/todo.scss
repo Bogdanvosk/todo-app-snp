@@ -55,7 +55,9 @@
 		}
 
 		span {
-			position: relative;
+			position: absolute;
+			top: 50%;
+			z-index: 5;
 
 			display: block;
 			width: 28px;
@@ -64,6 +66,8 @@
 			background-color: transparent;
 			border: 1px solid $color-black;
 			border-radius: 5px;
+
+			transform: translateY(-50%);
 		}
 
 		span::after {
@@ -101,11 +105,9 @@
 	&__text {
 		position: relative;
 
-		padding-right: 2rem;
-		overflow: hidden;
+		padding: 0 3rem;
 
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		overflow-wrap: break-word;
 	}
 
 	&__delete {
@@ -172,7 +174,9 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 3rem;
+		column-gap: 3rem;
+		row-gap: 0.5rem;
+		flex-wrap: wrap;
 
 		margin-bottom: 2rem;
 	}
