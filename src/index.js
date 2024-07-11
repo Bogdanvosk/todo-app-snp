@@ -5,7 +5,7 @@ const todoInput = document.querySelector('.todo__input input')
 const filterButtons = document.querySelector('.todo__filter')
 const todoCounter = document.querySelector('.todo__count')
 const clearTodosButton = document.querySelector('.todo__clear')
-const completeAllButton = document.querySelector('.todo__complete-all')
+const selectAllButton = document.querySelector('.todo__select-all')
 
 let todos = window.localStorage.getItem('todos')
 	? JSON.parse(window.localStorage.getItem('todos'))
@@ -46,15 +46,19 @@ const renderTodos = todos => {
 
 renderTodos(todos)
 
+const addTodo = value => {
+	const todo = { id: Date.now(), text: value, completed: false }
+	todos.push(todo)
+	todoInput.value = ''
+}
+
 const onTodoInputKeyPress = e => {
 	const filterBtnActive = filterButtons.querySelector('.active')
 	const value = e.target.value.trim()
 
 	if (e.key === 'Enter') {
 		if (value) {
-			const todo = { id: Date.now(), text: value, completed: false }
-			todos.push(todo)
-			todoInput.value = ''
+			addTodo(value)
 
 			window.localStorage.setItem('todos', JSON.stringify(todos))
 		}
@@ -65,16 +69,28 @@ const onTodoInputKeyPress = e => {
 
 todoInput.addEventListener('keypress', onTodoInputKeyPress)
 
+todoInput.addEventListener('blur', () => {
+	const filterBtnActive = filterButtons.querySelector('.active')
+	const newValue = todoInput.value.trim()
+
+	if (newValue) {
+		addTodo(newValue)
+		renderFilteredTodos(filterBtnActive)
+
+		window.localStorage.setItem('todos', JSON.stringify(todos))
+	}
+})
+
 const renderFilteredTodos = target => {
 	switch (target.dataset.filter) {
-		case 'all':
-			renderTodos(todos)
-			break
 		case 'active':
 			renderTodos(todos.filter(t => !t.completed))
 			break
 		case 'completed':
 			renderTodos(todos.filter(t => t.completed))
+			break
+		default:
+			renderTodos(todos)
 			break
 	}
 }
@@ -116,13 +132,17 @@ const onTodoItemsClick = e => {
 todoItems.addEventListener('click', onTodoItemsClick)
 
 // Изменение текста задачи
-const changeInput = (target, todoItem) => {
+const changeInput = (target, todoItem, reset = false) => {
 	const newValue = target.value.trim()
 	const id = todoItem.dataset.id
 
 	if (!newValue) return
 
 	target.classList.remove('visible')
+
+	if (reset) {
+		return (target.value = todos.find(t => t.id == id).text)
+	}
 
 	todos.find(t => t.id == id).text = newValue
 
@@ -142,14 +162,18 @@ const onTodoItemsDblClick = e => {
 		changeInputEl.focus()
 	}, 100)
 
-	changeInputEl.addEventListener('blur', () => {
-		changeInput(changeInputEl, todoItem)
-	})
-
-	changeInputEl.addEventListener('keypress', e => {
+	changeInputEl.addEventListener('keyup', e => {
 		if (e.key === 'Enter') {
 			changeInput(changeInputEl, todoItem)
 		}
+
+		if (e.key === 'Escape') {
+			changeInput(changeInputEl, todoItem, true)
+		}
+	})
+
+	changeInputEl.addEventListener('blur', () => {
+		changeInput(changeInputEl, todoItem)
 	})
 }
 
@@ -180,11 +204,14 @@ const onClearTodosClick = () => {
 
 clearTodosButton.addEventListener('click', onClearTodosClick)
 
-const onCompleteAllClick = () => {
+const onSelectAllClick = () => {
 	const filterBtnActive = filterButtons.querySelector('.active')
-	todos.map(t => (t.completed = true))
+	const isAllCompleted = todos.every(t => t.completed)
+
+	if (isAllCompleted) todos.map(t => (t.completed = false))
+	else todos.map(t => (t.completed = true))
 
 	renderFilteredTodos(filterBtnActive)
 }
 
-completeAllButton.addEventListener('click', onCompleteAllClick)
+selectAllButton.addEventListener('click', onSelectAllClick)
