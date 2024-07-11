@@ -158,6 +158,7 @@ const onTodoItemsDblClick = e => {
 	const changeInputEl = todoItem.querySelector('.todo__change')
 
 	changeInputEl.classList.add('visible')
+	// todoItem.classList.add('hidden')
 	setTimeout(() => {
 		changeInputEl.focus()
 	}, 100)

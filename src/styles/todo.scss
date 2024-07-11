@@ -163,11 +163,13 @@
 
 	&__change {
 		position: absolute;
-		top: 0;
+		top: 50%;
 		left: 0;
 		z-index: 5;
 
 		width: 100%;
+
+		transform: translateY(-50%)
 	}
 
 	&__nav {
