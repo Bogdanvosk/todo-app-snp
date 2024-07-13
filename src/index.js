@@ -102,7 +102,9 @@ const deleteTodo = id => {
 }
 
 const checkTodo = id => {
-	todos.find(t => t.id == id).completed = !todo.completed
+	const todo = todos.find(t => t.id == id)
+
+	todos.filter(t => t.id == id)[0].completed = !todo.completed
 	window.localStorage.setItem('todos', JSON.stringify(todos))
 }
 
