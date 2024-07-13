@@ -50,6 +50,8 @@ const addTodo = value => {
 	const todo = { id: Date.now(), text: value, completed: false }
 	todos.push(todo)
 	todoInput.value = ''
+
+	window.localStorage.setItem('todos', JSON.stringify(todos))
 }
 
 const onTodoInputKeyPress = e => {
@@ -59,10 +61,7 @@ const onTodoInputKeyPress = e => {
 	if (e.key === 'Enter') {
 		if (value) {
 			addTodo(value)
-
-			window.localStorage.setItem('todos', JSON.stringify(todos))
 		}
-
 		renderFilteredTodos(filterBtnActive)
 	}
 }
@@ -76,8 +75,6 @@ todoInput.addEventListener('blur', () => {
 	if (newValue) {
 		addTodo(newValue)
 		renderFilteredTodos(filterBtnActive)
-
-		window.localStorage.setItem('todos', JSON.stringify(todos))
 	}
 })
 
@@ -95,37 +92,43 @@ const renderFilteredTodos = target => {
 	}
 }
 
+const deleteTodo = id => {
+	todos.splice(
+		todos.findIndex(t => t.id == id),
+		1
+	)
+
+	window.localStorage.setItem('todos', JSON.stringify(todos))
+}
+
+const checkTodo = id => {
+	todos.find(t => t.id == id).completed = !todo.completed
+	window.localStorage.setItem('todos', JSON.stringify(todos))
+}
+
 const onTodoItemsClick = e => {
 	const target = e.target.closest('.todo__item')
 
 	// При клике на кнопку "крестик" удаляем задачу
 	if (e.target.classList.contains('todo__delete')) {
+		const target = e.target.closest('.todo__item')
 		const id = target.dataset.id
-
-		todos.splice(
-			todos.findIndex(t => t.id == id),
-			1
-		)
-		target.removeChild(e.target)
-		window.localStorage.setItem('todos', JSON.stringify(todos))
-
 		const filterBtnActive = filterButtons.querySelector('.active')
+
+		deleteTodo(id)
 		renderFilteredTodos(filterBtnActive)
 	}
 
 	// При клике на задачу обновляем ее статус
 	if (e.target.classList.contains('todo__check')) {
-		const id = target.closest('.todo__item').dataset.id
-		const todo = todos.find(t => t.id == id)
-		const todoEl = todoItems.querySelector(`.todo__item[data-id="${id}"]`)
 		const filterBtnActive = filterButtons.querySelector('.active')
+		const id = target.dataset.id
+		const todoEl = todoItems.querySelector(`.todo__item[data-id="${id}"]`)
 
-		todos.filter(t => t.id == id)[0].completed = !todo.completed
+		checkTodo(id)
 		todoEl.classList.toggle('completed')
 
 		renderFilteredTodos(filterBtnActive)
-
-		window.localStorage.setItem('todos', JSON.stringify(todos))
 	}
 }
 
@@ -133,22 +136,25 @@ todoItems.addEventListener('click', onTodoItemsClick)
 
 // Изменение текста задачи
 const changeInput = (target, todoItem, reset = false) => {
+	const filterBtnActive = filterButtons.querySelector('.active')
 	const newValue = target.value.trim()
 	const id = todoItem.dataset.id
-
-	if (!newValue) return
-
-	target.classList.remove('visible')
 
 	if (reset) {
 		return (target.value = todos.find(t => t.id == id).text)
 	}
 
+	if (!newValue) {
+		deleteTodo(id)
+		renderFilteredTodos(filterBtnActive)
+		return
+	}
+
+	target.classList.remove('visible')
 	todos.find(t => t.id == id).text = newValue
 
 	window.localStorage.setItem('todos', JSON.stringify(todos))
-
-	renderTodos(todos)
+	renderFilteredTodos(filterBtnActive)
 }
 
 const onTodoItemsDblClick = e => {
@@ -163,13 +169,14 @@ const onTodoItemsDblClick = e => {
 		changeInputEl.focus()
 	}, 100)
 
-	changeInputEl.addEventListener('keyup', e => {
+	changeInputEl.addEventListener('keydown', e => {
 		if (e.key === 'Enter') {
 			changeInput(changeInputEl, todoItem)
 		}
 
 		if (e.key === 'Escape') {
 			changeInput(changeInputEl, todoItem, true)
+			changeInputEl.blur()
 		}
 	})
 
@@ -194,13 +201,16 @@ const onFilterButtonsClick = e => {
 
 filterButtons.addEventListener('click', onFilterButtonsClick)
 
+const selectTodos = () => {
+	todos = todos.filter(t => !t.completed)
+	window.localStorage.setItem('todos', JSON.stringify(todos))
+}
+
 const onClearTodosClick = () => {
 	const filterBtnActive = filterButtons.querySelector('.active')
 
-	todos = todos.filter(t => !t.completed)
+	selectTodos()
 	renderFilteredTodos(filterBtnActive)
-
-	window.localStorage.setItem('todos', JSON.stringify(todos))
 }
 
 clearTodosButton.addEventListener('click', onClearTodosClick)
