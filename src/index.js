@@ -7,9 +7,7 @@ const todoCounter = document.querySelector('.todo__count')
 const clearTodosButton = document.querySelector('.todo__clear')
 const selectAllButton = document.querySelector('.todo__select-all')
 
-let todos = window.localStorage.getItem('todos')
-	? JSON.parse(window.localStorage.getItem('todos'))
-	: []
+let todos = JSON.parse(window.localStorage.getItem('todos')) || []
 
 // Рендер отдельной задачи
 const renderTodo = todo => {
@@ -27,204 +25,161 @@ const renderTodo = todo => {
 }
 
 const updateTodoCounter = () => {
-	const completedTodosLength = todos.filter(t => !t.completed).length
+	const completedTodos = todos.filter(t => !t.completed).length
 
-	todoCounter.textContent = completedTodosLength + ' items left'
+	todoCounter.textContent = `${completedTodos} items left`
 }
 
 // Рендер всех задач
-const renderTodos = todos => {
+const renderTodos = (todoList = todos) => {
 	todoItems.innerHTML = ''
 
-	todos &&
-		todos.forEach(todo => {
-			renderTodo(todo)
-		})
+	todoList.forEach(todo => {
+		renderTodo(todo)
+	})
 
 	updateTodoCounter()
 }
 
-renderTodos(todos)
+renderTodos()
 
-const addTodo = value => {
-	const todo = { id: Date.now(), text: value, completed: false }
-	todos.push(todo)
-	todoInput.value = ''
-
+const updateLocalStorage = () => {
 	window.localStorage.setItem('todos', JSON.stringify(todos))
 }
 
-const onTodoInputKeyPress = e => {
+const addTodo = value => {
 	const filterBtnActive = filterButtons.querySelector('.active')
-	const value = e.target.value.trim()
+	const newTodo = { id: Date.now(), text: value, completed: false }
+	todos.push(newTodo)
+	todoInput.value = ''
 
-	if (e.key === 'Enter') {
-		if (value) {
-			addTodo(value)
-		}
-		renderFilteredTodos(filterBtnActive)
-	}
+	updateLocalStorage()
+	renderFilteredTodos(filterBtnActive.dataset.filter)
 }
 
-todoInput.addEventListener('keypress', onTodoInputKeyPress)
+const handleChangeInput = e => {
+	const newValue = e.target.value.trim()
 
-todoInput.addEventListener('blur', () => {
-	const filterBtnActive = filterButtons.querySelector('.active')
-	const newValue = todoInput.value.trim()
+	if (newValue && (e.type === 'blur' || e.key === 'Enter')) addTodo(newValue)
+}
 
-	if (newValue) {
-		addTodo(newValue)
-		renderFilteredTodos(filterBtnActive)
-	}
-})
+todoInput.addEventListener('keypress', handleChangeInput)
+todoInput.addEventListener('blur', handleChangeInput)
 
-const renderFilteredTodos = target => {
-	switch (target.dataset.filter) {
-		case 'active':
-			renderTodos(todos.filter(t => !t.completed))
-			break
-		case 'completed':
-			renderTodos(todos.filter(t => t.completed))
-			break
-		default:
-			renderTodos(todos)
-			break
-	}
+const renderFilteredTodos = filter => {
+	if (filter == 'active') renderTodos(todos.filter(t => !t.completed))
+	else if (filter == 'completed') renderTodos(todos.filter(t => t.completed))
+	else renderTodos()
 }
 
 const deleteTodo = id => {
-	todos.splice(
-		todos.findIndex(t => t.id == id),
-		1
-	)
+	const filterBtnActive = filterButtons.querySelector('.active')
+	todos = todos.filter(t => t.id != id)
 
-	window.localStorage.setItem('todos', JSON.stringify(todos))
+	updateLocalStorage()
+	renderFilteredTodos(filterBtnActive.dataset.filter)
 }
 
 const checkTodo = id => {
+	const filterBtnActive = filterButtons.querySelector('.active')
 	const todo = todos.find(t => t.id == id)
 
-	todos.filter(t => t.id == id)[0].completed = !todo.completed
-	window.localStorage.setItem('todos', JSON.stringify(todos))
+	if (todo) todo.completed = !todo.completed
+
+	updateLocalStorage()
+	renderFilteredTodos(filterBtnActive.dataset.filter)
 }
 
-const onTodoItemsClick = e => {
+const handleTodoItemsClick = e => {
 	const target = e.target.closest('.todo__item')
+	const id = target && target.dataset.id
 
 	// При клике на кнопку "крестик" удаляем задачу
-	if (e.target.classList.contains('todo__delete')) {
-		const target = e.target.closest('.todo__item')
-		const id = target.dataset.id
-		const filterBtnActive = filterButtons.querySelector('.active')
-
-		deleteTodo(id)
-		renderFilteredTodos(filterBtnActive)
-	}
+	if (e.target.classList.contains('todo__delete')) deleteTodo(id)
 
 	// При клике на задачу обновляем ее статус
-	if (e.target.classList.contains('todo__check')) {
-		const filterBtnActive = filterButtons.querySelector('.active')
-		const id = target.dataset.id
-		const todoEl = todoItems.querySelector(`.todo__item[data-id="${id}"]`)
-
-		checkTodo(id)
-		todoEl.classList.toggle('completed')
-
-		renderFilteredTodos(filterBtnActive)
-	}
+	if (e.target.classList.contains('todo__check')) checkTodo(id)
 }
 
-todoItems.addEventListener('click', onTodoItemsClick)
+todoItems.addEventListener('click', handleTodoItemsClick)
 
-// Изменение текста задачи
-const changeInput = (target, todoItem, reset = false) => {
+const changeTodoText = (target, todoItem, reset = false) => {
 	const filterBtnActive = filterButtons.querySelector('.active')
 	const newValue = target.value.trim()
+
 	const id = todoItem.dataset.id
+	const editableTodo = todos.find(todo => todo.id == id)
 
-	if (reset) {
-		return (target.value = todos.find(t => t.id == id).text)
-	}
+	if (reset) target.value = editableTodo.text
 
-	if (!newValue) {
-		deleteTodo(id)
-		renderFilteredTodos(filterBtnActive)
-		return
-	}
+	if (newValue) editableTodo.text = newValue
+	else deleteTodo(id)
 
 	target.classList.remove('visible')
-	todos.find(t => t.id == id).text = newValue
-
-	window.localStorage.setItem('todos', JSON.stringify(todos))
-	renderFilteredTodos(filterBtnActive)
+	updateLocalStorage()
+	renderFilteredTodos(filterBtnActive.dataset.filter)
 }
 
-const onTodoItemsDblClick = e => {
+const handleDblClickTodoItems = e => {
 	const todoItem = e.target.closest('.todo__item')
 	if (!todoItem) return
 
 	const changeInputEl = todoItem.querySelector('.todo__change')
 
 	changeInputEl.classList.add('visible')
-
-	setTimeout(() => {
-		changeInputEl.focus()
-	}, 100)
+	changeInputEl.focus()
 
 	changeInputEl.addEventListener('keydown', e => {
 		if (e.key === 'Enter') {
-			changeInput(changeInputEl, todoItem)
+			changeTodoText(changeInputEl, todoItem)
 		}
 
 		if (e.key === 'Escape') {
-			changeInput(changeInputEl, todoItem, true)
+			changeTodoText(changeInputEl, todoItem, true)
 			changeInputEl.blur()
 		}
 	})
 
 	changeInputEl.addEventListener('blur', () => {
-		changeInput(changeInputEl, todoItem)
+		changeTodoText(changeInputEl, todoItem)
 	})
 }
 
-todoItems.addEventListener('dblclick', onTodoItemsDblClick)
+todoItems.addEventListener('dblclick', handleDblClickTodoItems)
 
-const onFilterButtonsClick = e => {
-	const filterBtnActive = filterButtons.querySelector('.active')
-	const target = e.target.closest('.todo__filter-item')
+const handleChangeFilter = e => {
+	const prevFilter = filterButtons.querySelector('.active')
+	const newFilter = e.target.closest('.todo__filter-item')
 
-	if (!target) return
+	if (newFilter) {
+		prevFilter.classList.remove('active')
+		newFilter.classList.add('active')
 
-	filterBtnActive.classList.remove('active')
-	target.classList.add('active')
-
-	renderFilteredTodos(target)
+		renderFilteredTodos(newFilter.dataset.filter)
+	}
 }
 
-filterButtons.addEventListener('click', onFilterButtonsClick)
+filterButtons.addEventListener('click', handleChangeFilter)
 
-const selectTodos = () => {
+const handleClickClearCompletedTodos = () => {
+	const filterBtnActive = filterButtons.querySelector('.active')
+
 	todos = todos.filter(t => !t.completed)
-	window.localStorage.setItem('todos', JSON.stringify(todos))
+
+	updateLocalStorage()
+	renderFilteredTodos(filterBtnActive.dataset.filter)
 }
 
-const onClearTodosClick = () => {
-	const filterBtnActive = filterButtons.querySelector('.active')
+clearTodosButton.addEventListener('click', handleClickClearCompletedTodos)
 
-	selectTodos()
-	renderFilteredTodos(filterBtnActive)
-}
-
-clearTodosButton.addEventListener('click', onClearTodosClick)
-
-const onSelectAllClick = () => {
+const handleClickSelectAll = () => {
 	const filterBtnActive = filterButtons.querySelector('.active')
 	const isAllCompleted = todos.every(t => t.completed)
 
-	if (isAllCompleted) todos.map(t => (t.completed = false))
-	else todos.map(t => (t.completed = true))
+	todos.forEach(todo => (todo.completed = !isAllCompleted))
 
-	renderFilteredTodos(filterBtnActive)
+	renderFilteredTodos(filterBtnActive.dataset.filter)
+	updateLocalStorage()
 }
 
-selectAllButton.addEventListener('click', onSelectAllClick)
+selectAllButton.addEventListener('click', handleClickSelectAll)
