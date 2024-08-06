@@ -1,7 +1,6 @@
 .todo {
 	&__input {
 		text-align: center;
-
 		input {
 			@media (max-width: $sm) {
 				width: 90%;
@@ -24,21 +23,16 @@
 
 	&__item {
 		position: relative;
-
 		width: 75%;
 		padding: 1.25rem;
-
 		font-size: 1.25rem;
 		line-height: 1.42;
 		font-family: inherit;
-
 		color: $color-black;
 		background-color: $color-white;
 		border: 1px solid $color-beige-200;
 		border-radius: 10px;
-
-		transition: $main-transition;
-
+		transition: background-color 0.3s ease, border 0.3s ease;
 		cursor: pointer;
 
 		@media (max-width: $sm) {
@@ -58,29 +52,23 @@
 			position: absolute;
 			top: 50%;
 			z-index: 5;
-
 			display: block;
 			width: 28px;
 			height: 28px;
-
 			background-color: transparent;
 			border: 1px solid $color-black;
 			border-radius: 5px;
-
 			transform: translateY(-50%);
 		}
 
 		span::after {
 			content: '';
-
 			position: absolute;
 			top: 3px;
 			left: 3px;
 			z-index: 0;
-
 			width: 20px;
 			height: 20px;
-
 			background-image: url('../assets/icons/completed.svg');
 			background-size: contain;
 			background-repeat: no-repeat;
@@ -104,9 +92,7 @@
 
 	&__text {
 		position: relative;
-
 		padding: 0 3rem;
-
 		overflow-wrap: break-word;
 	}
 
@@ -114,49 +100,37 @@
 		position: absolute;
 		top: 50%;
 		right: 10px;
-
 		width: 30px;
 		height: 30px;
-
 		background-color: transparent;
 		border: none;
-
+		transition: opacity 0.3s ease;
 		cursor: pointer;
 		transform: translateY(-50%);
 
 		&:hover {
 			opacity: 0.5;
-
-			transition: $main-transition;
 		}
 
 		&::before {
 			content: '';
-
 			position: absolute;
 			top: 50%;
 			right: 3px;
-
 			width: 25px;
 			height: 2px;
-
 			background-color: $color-black;
-
 			transform: translateY(-50%) rotate(45deg);
 		}
 
 		&::after {
 			content: '';
-
 			position: absolute;
 			top: 50%;
 			right: 3px;
-
 			width: 25px;
 			height: 2px;
-
 			background-color: $color-black;
-
 			transform: translateY(-50%) rotate(-45deg);
 		}
 	}
@@ -166,10 +140,8 @@
 		top: 50%;
 		left: 0;
 		z-index: 5;
-
 		width: 100%;
-
-		transform: translateY(-50%)
+		transform: translateY(-50%);
 	}
 
 	&__nav {
@@ -179,7 +151,6 @@
 		column-gap: 3rem;
 		row-gap: 0.5rem;
 		flex-wrap: wrap;
-
 		margin-bottom: 2rem;
 	}
 
@@ -188,7 +159,6 @@
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
-
 		&-item.active {
 			background-color: $color-beige-200;
 		}

@@ -18,18 +18,14 @@
 @mixin input {
 	width: 75%;
 	padding: 1.25rem;
-
 	font-size: 1.25rem;
 	line-height: 1.42;
 	font-family: inherit;
-
 	color: $color-black;
 	background-color: $color-white;
 	border: 1px solid $color-beige-200;
 	border-radius: 10px;
-
-	transition: $main-transition;
-
+	transition: background-color 0.3s ease;
 	outline: none;
 
 	&:hover {
@@ -44,16 +40,12 @@
 
 @mixin button {
 	padding: 0.5rem 1rem;
-
 	font-size: 20px;
-
 	color: $color-black;
 	background-color: transparent;
 	border: 1px solid transparent;
 	border-radius: 6px;
-
-	transition: $main-transition;
-
+	transition: background-color 0.3s ease;
 	cursor: pointer;
 
 	&:hover {
