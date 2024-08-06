@@ -67,8 +67,8 @@ todoInput.addEventListener('keypress', handleChangeInput)
 todoInput.addEventListener('blur', handleChangeInput)
 
 const renderFilteredTodos = filter => {
-	if (filter == 'active') renderTodos(todos.filter(t => !t.completed))
-	else if (filter == 'completed') renderTodos(todos.filter(t => t.completed))
+	if (filter === 'active') renderTodos(todos.filter(t => !t.completed))
+	else if (filter === 'completed') renderTodos(todos.filter(t => t.completed))
 	else renderTodos()
 }
 
@@ -82,7 +82,7 @@ const deleteTodo = id => {
 
 const checkTodo = id => {
 	const filterBtnActive = filterButtons.querySelector('.active')
-	const todo = todos.find(t => t.id == id)
+	const todo = todos.find(t => t.id === id)
 
 	if (todo) todo.completed = !todo.completed
 
@@ -108,7 +108,7 @@ const changeTodoText = (target, todoItem, reset = false) => {
 	const newValue = target.value.trim()
 
 	const id = todoItem.dataset.id
-	const editableTodo = todos.find(todo => todo.id == id)
+	const editableTodo = todos.find(todo => todo.id === id)
 
 	if (reset) target.value = editableTodo.text
 
